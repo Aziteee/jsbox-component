@@ -6,8 +6,8 @@ function trans(view) {
     }
   }
   if (view.type && typeof view.type !== "string") {
-    const View = view.type;
-    view = View.build(view);
+    const ViewBuilder = view.type;
+    view = ViewBuilder(view);
   }
   return view;
 }

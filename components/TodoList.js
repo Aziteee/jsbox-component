@@ -2,8 +2,26 @@ const { defineComponent } = require("../jsbox-component");
 
 module.exports = defineComponent({
   name: "TodoList",
-  props: ["data"],
+  props: {
+    data: {
+      value: [],
+      get(view) {
+        return view.get("TodoList__list").data;
+      },
+      set(view, value) {
+        view.get("TodoList__list").data = value;
+      }
+    }
+  },
   events: ["didInsertItem", "didDeleteItem", "didSelectItem"],
+  methods: {
+    insertItem(sender, value) {
+      sender.get("TodoList__list").insert({
+        index: 0,
+        value: value
+      });
+    }
+  },
   render() {
     return {
       type: "view",

@@ -43,10 +43,16 @@ render({
           $ui.toast("Copied");
         },
         didDeleteItem(sender, indexPath) {
-          console.log(`index ${indexPath.row} deleted`)
+          console.log(`index ${indexPath.row} deleted`);
         }
       },
       layout: $layout.fill
     }
-  ]
+  ],
+  events: {
+    appeared() {
+      TodoList("todolist").data = ["test1"]; // 修改属性值
+      TodoList("todolist").insertItem("test"); // 调用方法
+    }
+  }
 })
