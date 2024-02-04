@@ -24,13 +24,13 @@
 
 当值为数组时，定义了该组件需要的属性名
 
-```json
+```js
 props: ["name"]
 ```
 
 当值为对象时，可以定义某个属性的默认值
 
-```json
+```js
 props: {
 	name: "Alice"
 }
@@ -40,7 +40,7 @@ props: {
 
 组件的事件，值为一个数组，包含了事件名
 
-```json
+```js
 events: ["didClick"]
 ```
 
