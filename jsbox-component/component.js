@@ -54,7 +54,12 @@ function defineComponent(template) {
           keyIterator = Object.keys(template.props);
         }
         for (let propKey of keyIterator) {
-          if (template.props[propKey]?.value) {
+          // 防止deepClone无法复制JSBox内置对象属性
+          if (template.props[propKey] !== undefined) {
+            component.props[propKey] = template.props[propKey];
+          }
+          
+          if (template.props[propKey]?.value !== undefined) {
             component.props[propKey] = template.props[propKey].value;
           }
           if (view.props[propKey]) {
