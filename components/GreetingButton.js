@@ -15,9 +15,7 @@ module.exports = defineComponent({
       events: {
         tapped(sender) {
           $ui.toast(`Hello ${this.props.name} !`);
-          if (this.events.didClick) {
-            this.events.didClick();
-          }
+          this.events.didClick();
         }
       }
     }

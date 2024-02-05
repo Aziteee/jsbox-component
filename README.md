@@ -103,5 +103,5 @@ render({
 
 ## 修改属性值
 
-> 参考`TodoList.js`
+> 参考`components/Accumulator.js`和`main.js`
 

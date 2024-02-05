@@ -1,58 +1,45 @@
-const { render } = require("./jsbox-component");
+const $jc = require("./jsbox-component");
 
-// const GreetingButton = require("./components/GreetingButton");
+const Accumulator = require("./components/Accumulator");
 
-// render({
-//   views: [
-//     {
-//       type: GreetingButton,
-//       props: {
-//         name: "Alice"
-//       },
-//       layout: function(make, view) {
-//         make.center.equalTo(view.super)
-//         make.size.equalTo($size(150, 50))
-//       },
-//       events: {
-//         didClick() {
-//           console.log("clicked");
-//         }
-//       }
-//     }
-//   ]
-// });
-
-const TodoList = require("./components/TodoList");
-
-render({
+$jc.render({
   views: [
     {
-      type: TodoList,
+      type: "button",
       props: {
-        id: "todolist",
-        data: ["do something..."]
+        title: "Reset"
+      },
+      layout(make, view) {
+        make.top.left.inset(15);
+        make.width.equalTo(60);
       },
       events: {
-        didInsertItem(text) {
-          console.log(`new item ${text}`);
-        },
-        didSelectItem(title) {
-          console.log(title)
-          $clipboard.text = title;
-          $device.taptic();
-          $ui.toast("Copied");
-        },
-        didDeleteItem(sender, indexPath) {
-          console.log(`index ${indexPath.row} deleted`);
+        tapped() {
+          /**
+           * 通过get函数可以拿到某个组件的视图对象
+           * 拿到视图对象后可以调用methods中定义的方法
+           */
+          $jc.get("acc").reset();
         }
+      }
+    },
+    {
+      type: Accumulator,
+      props: {
+        id: "acc",
+        value: 10
       },
-      layout: $layout.fill
+      layout(make, view) {
+        make.left.inset(15);
+        make.top.equalTo(view.prev.bottom).offset(10);
+        make.height.equalTo(30);
+        make.width.equalTo(100);
+      },
+      events: {
+        didValueChanged(value) {
+          console.log(value);
+        }
+      }
     }
-  ],
-  events: {
-    appeared() {
-      TodoList("todolist").data = ["test1"]; // 修改属性值
-      TodoList("todolist").insertItem("test"); // 调用方法
-    }
-  }
+  ]
 })

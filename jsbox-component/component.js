@@ -1,4 +1,4 @@
-const { allocateId, deepClone } = require("./utils");
+const { allocateId } = require("./utils");
 
 function bindEventsFunction(view, thisArg) {
   if (view.events) {
@@ -15,80 +15,69 @@ function bindEventsFunction(view, thisArg) {
 }
 
 function defineComponent(template) {
-  return function (arg) {
-    if (typeof arg === "string") {
-      const id = arg;
+  return function (view) {
+    if (!view.props) view.props = {};
+    if (!view.events) view.events = {};
 
-      if (!Array.isArray(template.props)) {
-        return new Proxy($(id), {
-          get(obj, prop) {
-            if (template.props && template.props[prop]?.get) {
-              return template.props[prop].get(obj);
-            } else if (template.methods && template.methods[prop]) {
-              return function (value) {
-                return template.methods[prop](obj, value);
-              }
-            } else return obj[prop];
-          },
-          set(obj, prop, value) {
-            if (template.props && template.props[prop]?.set) {
-              template.props[prop].set(obj, value);
-            } else {
-              obj[prop] = value;
-            }
+    const component = {
+      name: "",
+      props: {},
+      methods: {},
+      events: {}
+    };
+
+    component.name = template.name;
+
+    if (template.props) {
+      if (Array.isArray(template.props)) {
+        template.props.forEach(propName => {
+          if (propName in view.props) {
+            component.props[propName] = view.props[propName];
+          } else {
+            component.props[propName] = null;
           }
         });
       } else {
-        return $(id);
-      }
-    } else {
-      const view = arg;
-      const component = deepClone(template);
-
-      if (view.props && template.props) {
-        let keyIterator = [];
-        if (Array.isArray(template.props)) {
-          component.props = {};
-          keyIterator = template.props;
-        } else {
-          keyIterator = Object.keys(template.props);
-        }
-        for (let propKey of keyIterator) {
-          // 防止deepClone无法复制JSBox内置对象属性
-          if (template.props[propKey] !== undefined) {
-            component.props[propKey] = template.props[propKey];
+        Object.keys(template.props).forEach((propName) => {
+          if (propName in view.props) {
+            component.props[propName] = view.props[propName];
+          } else {
+            component.props[propName] = template.props[propName];
           }
-          
-          if (template.props[propKey]?.value !== undefined) {
-            component.props[propKey] = template.props[propKey].value;
-          }
-          if (view.props[propKey]) {
-            component.props[propKey] = view.props[propKey];
-          }
-        }
+        })
       }
-
-      if (view.events && template.events) {
-        component.events = {};
-        for (let eventKey of template.events) {
-          if (view.events[eventKey]) {
-            component.events[eventKey] = view.events[eventKey];
-          }
-        }
-      }
-
-      const renderedView = component.render();
-      renderedView.layout = view.layout;
-
-      bindEventsFunction(renderedView, component);
-
-      if (!renderedView.props) {
-        renderedView.props = {}
-      }
-      renderedView.props.id = view.props?.id || allocateId(template.name);
-
-      return renderedView;
     }
+
+    if (template.events) {
+      template.events.forEach(eventName => {
+        if (eventName in view.events) {
+          component.events[eventName] = view.events[eventName];
+        } else {
+          component.events[eventName] = new Function();
+        }
+      });
+    }
+
+    if (template.methods) {
+      Object.keys(template.methods).forEach((methodName) => {
+        component.methods[methodName] = template.methods[methodName].bind(component);
+      })
+    }
+
+    const renderedView = template.render.call(component);
+    renderedView.layout = view.layout;
+
+    bindEventsFunction(renderedView, component);
+
+    const id = view.props?.id || allocateId(template.name);
+    window.$components[id] = component;
+
+    if (!renderedView.props) {
+      renderedView.props = {}
+    }
+    renderedView.props.id = id
+
+    return renderedView;
   }
 }
 
