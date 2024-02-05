@@ -38,10 +38,7 @@ module.exports = defineComponent({
           },
           events: {
             returned(sender) {
-              $("TodoList__list").insert({
-                index: 0,
-                value: sender.text
-              });
+              this.methods.insertItem(sender.super, sender.text);
               this.events.didInsertItem(sender.text);
               sender.blur();
               sender.text = "";
@@ -60,9 +57,9 @@ module.exports = defineComponent({
             ],
             data: this.props.data || []
           },
-          layout({left, top}) {
+          layout({left, top}, view) {
             left.bottom.right.equalTo(0);
-            top.equalTo($("TodoList__input").bottom).offset(10);
+            top.equalTo(view.prev.bottom).offset(10);
           },
           events: {
             didSelect(sender, indexPath, title) {
