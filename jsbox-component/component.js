@@ -23,7 +23,8 @@ function defineComponent(template) {
       name: "",
       props: {},
       methods: {},
-      events: {}
+      events: {},
+      view: {}
     };
 
     component.name = template.name;
@@ -48,6 +49,16 @@ function defineComponent(template) {
       }
     }
 
+    component.props = new Proxy(component.props, {
+      set(props, propName, value) {
+        const oldValue = props[propName];
+        props[propName] = value;
+        if (template.watch && propName in template.watch) {
+          template.watch[propName].call(component, value, oldValue);
+        }
+      }
+    })
+
     if (template.events) {
       template.events.forEach(eventName => {
         if (eventName in view.events) {
@@ -67,15 +78,25 @@ function defineComponent(template) {
     const renderedView = template.render.call(component);
     renderedView.layout = view.layout;
 
+    if (!renderedView.events) renderedView.events = {};
+    if ("ready" in renderedView.events) {
+      const oldReadyFunction = renderedView.events.ready;
+      renderedView.events.ready = function(sender) {
+        this.view = sender;
+        oldReadyFunction(sender);
+      }
+    } else {
+      renderedView.events.ready = function(sender) {
+        this.view = sender;
+      }
+    }
     bindEventsFunction(renderedView, component);
 
     const id = view.props?.id || allocateId(template.name);
     window.$components[id] = component;
 
-    if (!renderedView.props) {
-      renderedView.props = {}
-    }
-    renderedView.props.id = id
+    if (!renderedView.props) renderedView.props = {};
+    renderedView.props.id = id;
 
     return renderedView;
   }

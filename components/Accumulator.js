@@ -10,16 +10,6 @@ module.exports = defineComponent({
 
   // methods定义了一系列方法，可直接通过视图对象调用
   methods: {
-
-    /**
-     * 将值的变化显示到页面上
-     * @param {*} view 视图对象
-     */
-    _update(view) {
-      this.events.didValueChanged(this.props.value); // 当值发生变化时通知事件
-      view.get("label").text = this.props.value.toString();
-    },
-
     /**
      * 给value加上一个数
      * @param {*} view 视图对象
@@ -27,7 +17,6 @@ module.exports = defineComponent({
      */
     increase(view, value = 1) {
       this.props.value += value;
-      this.methods._update(view);
     },
 
     /**
@@ -37,7 +26,19 @@ module.exports = defineComponent({
      */
     reset(view, value = 0) {
       this.props.value = value;
-      this.methods._update(view);
+    }
+  },
+
+  // watch可以监听属性值的变化
+  watch: {
+    /**
+     * 监听value属性的变化
+     * @param {number} newValue 新值
+     * @param {number} oldValue 旧值
+     */
+    value(newValue, oldValue) {
+      this.events.didValueChanged(newValue); // 当值发生变化时通知事件
+      this.view.get("label").text = newValue.toString(); // 通过this.view可以直接获得在页面上的视图对象
     }
   },
 
