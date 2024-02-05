@@ -15,7 +15,7 @@ module.exports = defineComponent({
      * 将值的变化显示到页面上
      * @param {*} view 视图对象
      */
-    update(view) {
+    _update(view) {
       this.events.didValueChanged(this.props.value); // 当值发生变化时通知事件
       view.get("label").text = this.props.value.toString();
     },
@@ -27,7 +27,7 @@ module.exports = defineComponent({
      */
     increase(view, value = 1) {
       this.props.value += value;
-      this.methods.update(view);
+      this.methods._update(view);
     },
 
     /**
@@ -37,7 +37,7 @@ module.exports = defineComponent({
      */
     reset(view, value = 0) {
       this.props.value = value;
-      this.methods.update(view);
+      this.methods._update(view);
     }
   },
 

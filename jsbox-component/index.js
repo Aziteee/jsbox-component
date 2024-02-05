@@ -17,6 +17,10 @@ function get(id) {
   if (component) {
     return new Proxy(view, {
       get(obj, propName) {
+        // 以 _ 开头说明为组件内部私有属性或方法，不予访问
+        if (propName.startsWith("_")) {
+          return obj[propName];
+        }
         if (propName in component.props) {
           return component.props[propName];
         } else if (propName in component.methods) {
