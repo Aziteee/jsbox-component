@@ -115,6 +115,14 @@ function defineComponent(template) {
 
     const renderedView = template.render.call(component);
 
+    if (view.views !== undefined) {
+      if (renderedView.views == undefined) {
+        renderedView.views = view.views;
+      } else {
+        renderedView.views = renderedView.views.concat(view.views);
+      }
+    }
+
     if (view.layout !== undefined) renderedView.layout = view.layout;
 
     bindEventsFunction(renderedView, component);
