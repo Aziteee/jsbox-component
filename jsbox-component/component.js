@@ -1,4 +1,5 @@
 const { allocateId } = require("./utils");
+const { get } = require("./get");
 
 function bindEventsFunction(view, thisArg) {
   if (view.events) {
@@ -19,15 +20,13 @@ function defineComponent(template) {
     if (!view.props) view.props = {};
     if (!view.events) view.events = {};
 
-    const component = {
-      name: "",
+    let component = {
+      name: template.name,
+      id: view.props?.id || allocateId(template.name),
       props: {},
       methods: {},
-      events: {},
-      view: {}
+      events: {}
     };
-
-    component.name = template.name;
 
     if (template.props) {
       if (Array.isArray(template.props)) {
@@ -75,28 +74,23 @@ function defineComponent(template) {
       })
     }
 
+    component = new Proxy(component, {
+      get(obj, propName) {
+        if (propName === "view") {
+          return $(obj.id);
+        } else return obj[propName];
+      }
+    });
+
     const renderedView = template.render.call(component);
     renderedView.layout = view.layout;
 
-    if (!renderedView.events) renderedView.events = {};
-    if ("ready" in renderedView.events) {
-      const oldReadyFunction = renderedView.events.ready;
-      renderedView.events.ready = function(sender) {
-        this.view = sender;
-        oldReadyFunction(sender);
-      }
-    } else {
-      renderedView.events.ready = function(sender) {
-        this.view = sender;
-      }
-    }
     bindEventsFunction(renderedView, component);
 
-    const id = view.props?.id || allocateId(template.name);
-    window.$components[id] = component;
+    window.$components[component.id] = component;
 
     if (!renderedView.props) renderedView.props = {};
-    renderedView.props.id = id;
+    renderedView.props.id = component.id;
 
     return renderedView;
   }
