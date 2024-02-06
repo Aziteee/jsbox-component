@@ -1,4 +1,14 @@
-const { allocateId } = require("./utils");
+'use strict';
+
+function allocateId$1(name) {
+  return name + '-' + new Date().getTime().toString(36) + '-' + Math.random().toString(36).substring(2, 11);
+}
+
+var utils = {
+  allocateId: allocateId$1
+};
+
+const { allocateId } = utils;
 
 /**
  * Change the reference of 'this' in event functions
@@ -39,7 +49,7 @@ function bindEventsFunction(view, thisArg) {
  * @example
  * // see component/Accumulator.js
  */
-function defineComponent(template) {
+function defineComponent$1(template) {
   return function (view) {
     if (!view.props) view.props = {};
     if (!view.events) view.events = {};
@@ -68,7 +78,7 @@ function defineComponent(template) {
           } else {
             component.props[propName] = template.props[propName];
           }
-        })
+        });
       }
     }
 
@@ -80,7 +90,7 @@ function defineComponent(template) {
           template.watch[propName].call(component, value, oldValue);
         }
       }
-    })
+    });
 
     if (template.events) {
       template.events.forEach(eventName => {
@@ -95,7 +105,7 @@ function defineComponent(template) {
     if (template.methods) {
       Object.keys(template.methods).forEach((methodName) => {
         component.methods[methodName] = template.methods[methodName].bind(component);
-      })
+      });
     }
 
     component = new Proxy(component, {
@@ -120,6 +130,103 @@ function defineComponent(template) {
   }
 }
 
-module.exports = {
-  defineComponent
+var component = {
+  defineComponent: defineComponent$1
+};
+
+/**
+ * Transform your custom component to the form that JSBox can recognize
+ * @param {View} view 
+ * @returns 
+ */
+function trans$1(view) {
+  if (view.views) {
+    for (let i in view.views) {
+      view.views[i] = trans$1(view.views[i]);
+    }
+  }
+  if (view.type && typeof view.type !== "string") {
+    const ViewBuilder = view.type;
+    view = ViewBuilder(view);
+  }
+  return view;
 }
+
+var trans_1 = {
+  trans: trans$1
+};
+
+/**
+ * Get the view instance on the screen (same as $("id") but it can approach some custom props or methods)
+ * @param {*} id The id of the component (defined in props)
+ * @returns 
+ */
+function get$1(id) {
+  const component = window.$components[id];
+  const view = $(id);
+  if (component) {
+    return new Proxy(view, {
+      get(obj, propName) {
+        if (propName.startsWith("_")) {
+          return obj[propName];
+        }
+        
+        if (propName in component.props) {
+          return component.props[propName];
+        } else if (propName in component.methods) {
+          return component.methods[propName];
+        } else return obj[propName];
+      }
+    })
+  } else {
+    return view;
+  }
+}
+
+var get_1 = {
+  get: get$1
+};
+
+const { defineComponent } = component;
+const { trans } = trans_1;
+const { get } = get_1;
+
+/**
+ * Render the view on the screen (same as $ui.render)
+ * @param {View} view 
+ */
+function render(view) {
+  view = trans(view);
+  $ui.render(view);
+}
+
+/**
+ * Same as $ui.push
+ * @param {View} view 
+ */
+function push(view) {
+  view = trans(view);
+  $ui.push(view);
+}
+
+window.$components = {};
+
+var jsboxComponent = {
+  defineComponent,
+  render,
+  push,
+  trans,
+  get
+};
+var jsboxComponent_1 = jsboxComponent.defineComponent;
+var jsboxComponent_2 = jsboxComponent.render;
+var jsboxComponent_3 = jsboxComponent.push;
+var jsboxComponent_4 = jsboxComponent.trans;
+var jsboxComponent_5 = jsboxComponent.get;
+
+exports.default = jsboxComponent;
+exports.defineComponent = jsboxComponent_1;
+exports.get = jsboxComponent_5;
+exports.push = jsboxComponent_3;
+exports.render = jsboxComponent_2;
+exports.trans = jsboxComponent_4;

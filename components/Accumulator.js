@@ -5,7 +5,7 @@ module.exports = defineComponent({
 
   // props定义了一系列在组件可传入的属性，可直接通过视图对象获取
   props: {
-    value: 0 // 属性 'value' 的默认值为0
+    value: 0, // 属性 'value' 的默认值为0
   },
 
   // methods定义了一系列方法，可直接通过视图对象调用

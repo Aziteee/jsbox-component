@@ -4,7 +4,7 @@
 
 ## 如何使用
 
-把`jsbox-component`目录复制到你的项目中，再导入即可使用
+把`component.js`目录复制到你的项目中，即可导入使用
 
 > components文件夹中有两个小demo，以供参考
 

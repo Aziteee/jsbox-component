@@ -1,0 +1,19 @@
+{
+  "name": "jsbox-component",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "build": "rollup --config rollup.config.mjs --no-esModule",
+    "doc": "jsdoc -c jsdoc.config.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jsdoc": "^4.0.2",
+    "rollup": "^4.9.6",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0"
+  }
+}

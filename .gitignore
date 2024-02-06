@@ -3,3 +3,4 @@ test.js
 dist
 pnpm-lock.yaml
 node_modules
+docs

@@ -1,3 +1,9 @@
+
+/**
+ * Get the view instance on the screen (same as $("id") but it can approach some custom props or methods)
+ * @param {*} id The id of the component (defined in props)
+ * @returns 
+ */
 function get(id) {
   const component = window.$components[id];
   const view = $(id);
