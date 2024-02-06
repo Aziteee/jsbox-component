@@ -21,6 +21,13 @@ function bindEventsFunction(view, thisArg) {
       view.events[eventKey] = view.events[eventKey].bind(thisArg);
     });
   }
+  if (view.type === "list" && view.props?.actions) {
+    for (const i in view.props.actions) {
+      if (view.props.actions[i].handler) {
+        view.props.actions[i].handler = view.props.actions[i].handler.bind(thisArg);
+      }
+    }
+  }
   if (view.views) {
     for (let i in view.views) {
       bindEventsFunction(view.views[i], thisArg);
