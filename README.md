@@ -48,6 +48,10 @@ events: ["didClick"]
 
 组件的方法，可以通过组件的实例调用
 
+### watch
+
+用于监听属性值的变化
+
 ### render（方法）
 
 返回一个JSBox控件的对象
@@ -76,7 +80,7 @@ render: function() {
 使用`render`函数可以在页面上渲染创建的组件，使用方法与JSBox原生控件一致，但`type`字段要改为组件对象
 
 ```js
-const { render } = require("./jsbox-component");
+const { render } = require("component");
 
 const GreetingButton = require("./components/GreetingButton");
 
@@ -101,7 +105,46 @@ render({
 });
 ```
 
-## 修改属性值
+## 获取和修改属性值
 
-> 参考`components/Accumulator.js`和`main.js`
+> 参考代码在`components/Accumulate.js`和`main.js`
+
+使用`get`函数可以获取该组件的视图对象
+
+```js
+const { get } = rerquire("component");
+const view = get("acc"); // 通过组件id获取视图对象
+```
+
+通过视图对象可以直接获取组件的属性值，但无法修改
+
+```js
+console.log(view.value); // 10
+view.value = 0; // 报错
+```
+
+通过`methods`中的定义方法可以间接修改属性值
+
+```js
+view.reset();
+console.log(view.value); // 0
+```
+
+## 监听属性值的变化
+
+有时我们想在属性值变化时修改页面上的显示，这时可以通过在`defineComponent`时添加`watch`属性来监听属性值的变化。
+
+```js
+watch: {
+  /**
+   * 监听value属性的变化
+   * @param {number} newValue 新值
+   * @param {number} oldValue 旧值
+   */
+  value(newValue, oldValue) {
+    this.events.didValueChanged(newValue); // 当值发生变化时通知事件
+    this.view.get("label").text = newValue.toString(); // 通过this.view可以直接获得在页面上的视图对象
+  }
+}
+```
 
