@@ -1,6 +1,7 @@
 const $jc = require("./jsbox-component");
 
 const Accumulator = require("./components/Accumulator");
+const TabLayout = require("./components/TabLayout");
 
 $jc.render({
   views: [
@@ -38,6 +39,35 @@ $jc.render({
       events: {
         didValueChanged(value) {
           console.log(value);
+        }
+      }
+    },
+    {
+      type: TabLayout,
+      props: {
+        index: 0,
+        tabs: [
+          {
+            title: "Home",
+            icon: "102"
+          },
+          {
+            title: "Favorite",
+            icon: "061"
+          },
+          {
+            title: "Settings",
+            icon: "002"
+          }
+        ]
+      },
+      layout(make, view) {
+        make.bottom.right.left.equalTo(view.super.safeArea);
+        make.height.equalTo(50);
+      },
+      events: {
+        onTabChanged: (index, title) => {
+          console.log(index, title);
         }
       }
     }
