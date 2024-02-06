@@ -6,8 +6,6 @@
 
 把`component.js`目录复制到你的项目中，即可导入使用
 
-> components文件夹中有两个小demo，以供参考
-
 ## 定义组件
 
 使用`defineComponent`函数可以定义一个组件
