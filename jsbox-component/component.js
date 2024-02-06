@@ -32,7 +32,7 @@ function defineComponent(template) {
     if (template.props) {
       if (Array.isArray(template.props)) {
         template.props.forEach(propName => {
-          if (propName in view.props) {
+          if (propName in view.props && !propName.startsWith("_")) {
             component.props[propName] = view.props[propName];
           } else {
             component.props[propName] = null;
@@ -40,7 +40,7 @@ function defineComponent(template) {
         });
       } else {
         Object.keys(template.props).forEach((propName) => {
-          if (propName in view.props) {
+          if (propName in view.props && !propName.startsWith("_")) {
             component.props[propName] = view.props[propName];
           } else {
             component.props[propName] = template.props[propName];
