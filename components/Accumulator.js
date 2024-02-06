@@ -12,19 +12,17 @@ module.exports = defineComponent({
   methods: {
     /**
      * 给value加上一个数
-     * @param {*} view 视图对象
      * @param {number} value 增加的值
      */
-    increase(view, value = 1) {
+    increase(value = 1) {
       this.props.value += value;
     },
 
     /**
      * 重置value属性的值
-     * @param {*} view 视图对象
      * @param {number} value 初始值
      */
-    reset(view, value = 0) {
+    reset(value = 0) {
       this.props.value = value;
     }
   },
@@ -61,8 +59,8 @@ module.exports = defineComponent({
             make.centerY.equalTo(view.super);
           },
           events: {
-            tapped(sender) {
-              this.methods.increase(sender.super); // 调用methods里的increase方法
+            tapped() {
+              this.methods.increase(); // 调用methods里的increase方法
             }
           }
         },

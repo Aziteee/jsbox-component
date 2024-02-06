@@ -24,9 +24,7 @@ function get(id) {
         if (propName in component.props) {
           return component.props[propName];
         } else if (propName in component.methods) {
-          return function (value) {
-            return component.methods[propName](obj, value);
-          }
+          return component.methods[propName];
         } else return obj[propName];
       }
     })
