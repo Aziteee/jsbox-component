@@ -19,6 +19,11 @@ function get(id) {
         } else if (propName in component.methods) {
           return component.methods[propName];
         } else return obj[propName];
+      },
+      set(obj, propName, value) {
+        if (!propName.startsWith("_") && propName in component.props) {
+          component.props[propName] = value;
+        } else obj[propName] = value;
       }
     })
   } else {

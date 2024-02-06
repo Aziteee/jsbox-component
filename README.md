@@ -116,14 +116,14 @@ const { get } = rerquire("component");
 const view = get("acc"); // 通过组件id获取视图对象
 ```
 
-通过视图对象可以直接获取组件的属性值，但无法修改
+通过视图对象可以直接获取组件的属性值，也可以修改属性值
 
 ```js
 console.log(view.value); // 10
-view.value = 0; // 报错
+view.value = 0;
 ```
 
-通过`methods`中的定义方法可以间接修改属性值
+通过视图对象可以调用`methods`中的定义方法
 
 ```js
 view.reset();
