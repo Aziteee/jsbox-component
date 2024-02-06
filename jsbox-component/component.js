@@ -107,7 +107,8 @@ function defineComponent(template) {
     });
 
     const renderedView = template.render.call(component);
-    renderedView.layout = view.layout;
+
+    if (view.layout !== undefined) renderedView.layout = view.layout;
 
     bindEventsFunction(renderedView, component);
 
