@@ -85,9 +85,11 @@ function defineComponent$1(template) {
     component.props = new Proxy(component.props, {
       set(props, propName, value) {
         const oldValue = props[propName];
-        props[propName] = value;
-        if (template.watch && propName in template.watch) {
-          template.watch[propName].call(component, value, oldValue);
+        if (value !== oldValue) {
+          props[propName] = value;
+          if (template.watch && propName in template.watch) {
+            template.watch[propName].call(component, value, oldValue);
+          }
         }
       }
     });
