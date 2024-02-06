@@ -44,13 +44,19 @@ function defineComponent(template) {
     if (!view.props) view.props = {};
     if (!view.events) view.events = {};
 
-    let component = {
+    const component = new Proxy({
       name: template.name,
       id: view.props?.id || allocateId(template.name),
       props: {},
       methods: {},
       events: {}
-    };
+    }, {
+      get(obj, propName) {
+        if (propName === "view") {
+          return $(obj.id);
+        } else return obj[propName];
+      }
+    });
 
     if (template.props) {
       if (Array.isArray(template.props)) {
@@ -99,14 +105,6 @@ function defineComponent(template) {
         component.methods[methodName] = template.methods[methodName].bind(component);
       })
     }
-
-    component = new Proxy(component, {
-      get(obj, propName) {
-        if (propName === "view") {
-          return $(obj.id);
-        } else return obj[propName];
-      }
-    });
 
     const renderedView = template.render.call(component);
 
