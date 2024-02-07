@@ -1,4 +1,5 @@
 const { allocateId } = require("./utils");
+const { trans } = require("./trans");
 
 /**
  * Change the reference of 'this' in event functions
@@ -113,7 +114,7 @@ function defineComponent(template) {
       })
     }
 
-    const renderedView = template.render.call(component);
+    const renderedView = trans(template.render.call(component));
 
     if (view.views !== undefined) {
       if (renderedView.views == undefined) {

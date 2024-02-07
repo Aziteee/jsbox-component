@@ -8,7 +8,48 @@ var utils = {
   allocateId: allocateId$1
 };
 
+/**
+ * Transform your custom component to the form that JSBox can recognize
+ * @param {View} view 
+ * @returns 
+ */
+function trans$2(view) {
+  if (view.views) {
+    for (const i in view.views) {
+      view.views[i] = trans$2(view.views[i]);
+    }
+  }
+  if (view.type) {
+    if (typeof view.type !== "string") {
+      const ViewBuilder = view.type;
+      view = ViewBuilder(view);
+    } else if (view.type === "list" || view.type === "matrix") {
+      if (view.props?.template) {
+        if (Array.isArray(view.props.template)) {
+          for (const i in view.props.template) {
+            view.props.template[i] = trans$2(view.props.template[i]);
+          }
+        } else {
+          view.props.template = trans$2(view.props.template);
+        }
+      }
+    } else if (view.type === "gallery") {
+      if (view.props?.items) {
+        for (const i in view.props.items) {
+          view.props.items[i] = trans$2(view.props.items[i]);
+        }
+      }
+    }
+  }
+  return view;
+}
+
+var trans_1 = {
+  trans: trans$2
+};
+
 const { allocateId } = utils;
+const { trans: trans$1 } = trans_1;
 
 /**
  * Change the reference of 'this' in event functions
@@ -123,7 +164,7 @@ function defineComponent$1(template) {
       });
     }
 
-    const renderedView = template.render.call(component);
+    const renderedView = trans$1(template.render.call(component));
 
     if (view.views !== undefined) {
       if (renderedView.views == undefined) {
@@ -148,46 +189,6 @@ function defineComponent$1(template) {
 
 var component = {
   defineComponent: defineComponent$1
-};
-
-/**
- * Transform your custom component to the form that JSBox can recognize
- * @param {View} view 
- * @returns 
- */
-function trans$1(view) {
-  if (view.views) {
-    for (const i in view.views) {
-      view.views[i] = trans$1(view.views[i]);
-    }
-  }
-  if (view.type) {
-    if (typeof view.type !== "string") {
-      const ViewBuilder = view.type;
-      view = ViewBuilder(view);
-    } else if (view.type === "list" || view.type === "matrix") {
-      if (view.props?.template) {
-        if (Array.isArray(view.props.template)) {
-          for (const i in view.props.template) {
-            view.props.template[i] = trans$1(view.props.template[i]);
-          }
-        } else {
-          view.props.template = trans$1(view.props.template);
-        }
-      }
-    } else if (view.type === "gallery") {
-      if (view.props?.items) {
-        for (const i in view.props.items) {
-          view.props.items[i] = trans$1(view.props.items[i]);
-        }
-      }
-    }
-  }
-  return view;
-}
-
-var trans_1 = {
-  trans: trans$1
 };
 
 /**

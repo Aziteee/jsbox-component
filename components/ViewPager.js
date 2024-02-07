@@ -1,4 +1,4 @@
-const { defineComponent } = require("../jsbox-component");
+const { defineComponent, trans } = require("../jsbox-component");
 
 module.exports = defineComponent({
   name: "ViewPager",
@@ -49,7 +49,7 @@ module.exports = defineComponent({
               frame.width,
               frame.height
             );
-            sender.add(item);
+            sender.add(trans(item));
           });
           sender.contentSize = $size(
             frame.width * this.props.pages.length,

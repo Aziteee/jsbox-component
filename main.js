@@ -1,5 +1,6 @@
 const $jc = require("./jsbox-component");
 
+const GreetingButton = require("./components/GreetingButton")
 const Accumulator = require("./components/Accumulator");
 const TabLayout = require("./components/TabLayout");
 const ViewPager = require("./components/ViewPager");
@@ -95,11 +96,14 @@ const components = [
                 },
                 views: [
                   {
-                    type: "label",
+                    type: GreetingButton,
                     props: {
-                      text: "Page1"
+                      name: "Alice"
                     },
-                    layout: $layout.center
+                    layout(make, view) {
+                      make.center.equalTo(view.super);
+                      make.width.equalTo(130);
+                    }
                   }
                 ]
               },
