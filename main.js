@@ -149,7 +149,50 @@ const components = [
   }
 ];
 
-const tests = [];
+const tests = [
+  {
+    name: "在template中使用组件",
+    page: {
+      views: [
+        {
+          type: "list",
+          props: {
+            template: [
+              {
+                type: Accumulator,
+                props: {
+                  id: "acc"
+                },
+                layout(make, view) {
+                  make.right.inset(100);
+                  make.centerY.equalTo(view.super);
+                }
+              }
+            ],
+            data: [
+              {
+                label: {
+                  text: "0"
+                }
+              },
+              {
+                label: {
+                  text: "1"
+                }
+              },
+              {
+                label: {
+                  text: "2"
+                }
+              }
+            ]
+          },
+          layout: $layout.fill
+        }
+      ]
+    }
+  }
+];
 
 const data = [
   {
@@ -179,7 +222,9 @@ $jc.render({
         didSelect: function (tableView, indexPath, item) {
           if (indexPath.section == 0) {
             $jc.push(components[indexPath.row].page)
-          } else $jc.push(tests[indexPath.row].page);
+          } else {
+            $jc.push(tests[indexPath.row].page)
+          };
         }
       }
     }
