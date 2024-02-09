@@ -54,6 +54,8 @@ events: ["didClick"]
 
 返回一个JSBox控件的对象
 
+内部所有函数的`this`都会指向创建出来的组件实例，这意味着你可以直接通过`this.props`来获取和修改组件的属性，或是通过`this.methods`访问组件的方法
+
 ```js
 render: function() {
     return {
@@ -72,6 +74,8 @@ render: function() {
     }
   }
 ```
+
+> 通过`this.view`可以直接获得在页面上的视图对象
 
 ## 渲染组件
 
@@ -141,8 +145,13 @@ watch: {
    */
   value(newValue, oldValue) {
     this.events.didValueChanged(newValue); // 当值发生变化时通知事件
-    this.view.get("label").text = newValue.toString(); // 通过this.view可以直接获得在页面上的视图对象
+    this.view.get("label").text = newValue.toString();
   }
 }
 ```
 
+## 组件内部状态
+
+通过修改`props`属性值来改变组件内部状态
+
+再通过`watch`监听属性值的变化从而将状态的变化显示到页面上
