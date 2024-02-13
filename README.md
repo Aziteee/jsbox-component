@@ -2,6 +2,8 @@
 
 在jsbox中实现ui组件化
 
+[快速上手](https://blog.azite.cn/archives/jsbox-component-tutorial-tablayout)
+
 ## 如何使用
 
 把`component.js`目录复制到你的项目中，即可导入使用
